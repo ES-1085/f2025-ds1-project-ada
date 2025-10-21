@@ -1,14 +1,56 @@
 Project proposal
 ================
-Team name
+ADA
 
 ``` r
 library(tidyverse)
 library(broom)
+## Add any additional packages you are using here
+library(readr)
+social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", 
+    skip = 2, n_max = 17)
+# View(social)
+
+library(readr)
+demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", 
+    skip = 1)
+# View(demographic)
 ```
 
-## 1\. Introduction
+## 1. Introduction
 
-## 2\. Data
+The introduction should introduce your general research question(s) and
+your data (where it came from, how it was collected, what are the cases,
+what are the variables, etc.).
 
-## 3\. Data analysis plan
+Text goes here. Refer to the Markdown Quick Reference: Help -\> Markdown
+Quick Reference.
+
+## 2. Data
+
+Text goes here. Place your data in the /data folder, and add dimensions
+and codebook to the README in that folder. Then print out the output of
+glimpse() or skim() of your data frame.
+
+``` r
+# Code goes here
+# Read in your data file
+# Print the output of glimpse() or skim()
+```
+
+## 3. Data analysis plan
+
+Text goes here. - What variables will you visualize to explore your
+research questions? - Will there be any other data that you need to find
+to help with your research question? - Very preliminary exploratory data
+analysis, including some summary statistics and visualizations, along
+with some explanation on how they help you learn more about your data.
+(You can add to these later as you work on your project.) - The data
+visualization(s) that you believe will be useful in exploring your
+question(s). (You can update these later as you work on your project.)
+
+``` r
+# Code goes here
+# Code to calculate summary statistics
+# Code for a visualization
+```
