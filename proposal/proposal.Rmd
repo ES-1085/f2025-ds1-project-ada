@@ -10,11 +10,8 @@ install.packages(c("janitor", "skimr"))
 install.packages(c("tidyverse", "broom"))
 library(tidyverse)
 library(broom)
-<<<<<<< HEAD
 library(skimr)
 ## Add any additional packages you are using here
-
-=======
 
 ## Add any additional packages you are using here
 library(readr)
@@ -26,7 +23,6 @@ library(readr)
 demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", 
     skip = 1)
 # View(demographic)
->>>>>>> 1444b959a3f7cb906972d22331bbbf5abe1da545
 ```
 
 ## 1. Introduction
@@ -50,11 +46,9 @@ demographic <- read_csv("../data/social_media_usage_among_demographic_groups - S
 # Print the output of glimpse() or skim()
 demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
 
-<<<<<<< HEAD
 glimpse(demographic)
 skim(demographic)
-=======
->>>>>>> 1444b959a3f7cb906972d22331bbbf5abe1da545
+
 
 ```
 

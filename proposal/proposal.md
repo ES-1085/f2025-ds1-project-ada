@@ -8,23 +8,9 @@ install.packages(c("janitor", "skimr"))
 install.packages(c("tidyverse", "broom"))
 library(tidyverse)
 library(broom)
-<<<<<<< HEAD
 library(skimr)
 ## Add any additional packages you are using here
-```
 
-## 1. Introduction
-
-The introduction should introduce your general research question(s) and
-your data (where it came from, how it was collected, what are the cases,
-what are the variables, etc.).
-
-Text goes here. Refer to the Markdown Quick Reference: Help -\> Markdown
-Quick Reference.
-
-## 2. Data
-
-=======
 ## Add any additional packages you are using here
 library(readr)
 social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", 
@@ -48,7 +34,6 @@ Quick Reference.
 
 ## 2. Data
 
->>>>>>> 1444b959a3f7cb906972d22331bbbf5abe1da545
 Text goes here. Place your data in the /data folder, and add dimensions
 and codebook to the README in that folder. Then print out the output of
 glimpse() or skim() of your data frame.
@@ -56,7 +41,6 @@ glimpse() or skim() of your data frame.
 ``` r
 # Code goes here
 # Read in your data file
-<<<<<<< HEAD
 setwd("/cloud/project/proposal")
 library(readr)
 social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", skip = 2, n_max = 17)
@@ -148,11 +132,6 @@ Data summary
 | Reddit        |         0 |             1 |   3 |   3 |     0 |        6 |          0 |
 | BeReal        |         0 |             1 |   2 |   2 |     0 |        6 |          0 |
 
-=======
-# Print the output of glimpse() or skim()
-```
-
->>>>>>> 1444b959a3f7cb906972d22331bbbf5abe1da545
 ## 3. Data analysis plan
 
 Text goes here. - What variables will you visualize to explore your
