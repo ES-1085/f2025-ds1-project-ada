@@ -1,6 +1,6 @@
 ---
 title: "Project proposal"
-author: "AAD"
+author: "ADA"
 output: github_document
 ---
 
