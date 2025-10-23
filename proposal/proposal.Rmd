@@ -85,7 +85,7 @@ demographic_clean <- demographic %>%
 ```
 
 
-## Draft bar chart for specific platform usage by demographic use
+# Draft bar chart for specific platform usage by demographic use
 
 ```{r platform-usage-by-group}
 # Code for a visualization
