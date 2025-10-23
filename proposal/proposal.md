@@ -4,23 +4,12 @@ ADA
 
 ``` r
 #install packages 
-install.packages(c("janitor", "skimr"))
-install.packages(c("tidyverse", "broom"))
+## install.packages(c("janitor", "skimr"))
+## install.packages(c("tidyverse", "broom"))
 library(tidyverse)
 library(broom)
 library(skimr)
 ## Add any additional packages you are using here
-
-## Add any additional packages you are using here
-library(readr)
-social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", 
-    skip = 2, n_max = 17)
-# View(social)
-
-library(readr)
-demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", 
-    skip = 1)
-# View(demographic)
 ```
 
 ## 1. Introduction
@@ -79,18 +68,6 @@ demographic <- read_csv("../data/social_media_usage_among_demographic_groups - S
 
 ``` r
 # Print the output of glimpse() or skim()
-demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
-```
-
-    ## Rows: 6 Columns: 12
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (12): Group, Youtube, Facebook, Instagram, Pinterest, TikTok, LinkedIn, ...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 glimpse(demographic)
 ```
 
@@ -145,17 +122,75 @@ Data summary
 
 ## 3. Data analysis plan
 
-Text goes here. - What variables will you visualize to explore your
-research questions? - Will there be any other data that you need to find
-to help with your research question? - Very preliminary exploratory data
-analysis, including some summary statistics and visualizations, along
-with some explanation on how they help you learn more about your data.
-(You can add to these later as you work on your project.) - The data
-visualization(s) that you believe will be useful in exploring your
-question(s). (You can update these later as you work on your project.)
+The variables that we will visualize to explore our research questions
+are: - `gender`, will be created through defining the specific gender -
+`race`, will be created by defining the specific race - `year`
+(2012-2024) - `platform` (%), will be created through defining the
+specific social media platform - `group`
+
+Other data needed: - Engagement data (i.e. average time spent, purpose
+of use) - Regional data to assess geographic patterns This would give us
+more context about why certain groups prefer specific platforms.
+
+- Very preliminary exploratory data analysis, including some summary
+  statistics and visualizations, along with some explanation on how they
+  help you learn more about your data. (You can add to these later as
+  you work on your project.)
+
+The types of visualizations we want to use: - Bar Chart – to compare
+platform usage across `group` - Stacked Bar Chart – to show the overall
+distribution of platform use by `gender` or `race` - Heatmap – to
+visualize the correlation between `group` and `platform` popularity -
+Trend Line Chart - to show how `platform` popularity changes over time
+
+## Clean the demographic data to take out percentages
 
 ``` r
-# Code goes here
-# Code to calculate summary statistics
-# Code for a visualization
+demographic_clean <- demographic %>%
+  mutate(across(where(is.character), ~ as.numeric(gsub("%", "", .))))
 ```
+
+    ## Warning: There was 1 warning in `mutate()`.
+    ## ℹ In argument: `across(where(is.character), ~as.numeric(gsub("%", "", .)))`.
+    ## Caused by warning:
+    ## ! NAs introduced by coercion
+
+``` r
+# Code to calculate summary statistics
+## summary_stats <- demographic_clean %>%
+##   group_by(Group) %>%
+##  summarise(
+##    Facebook_mean = mean(Facebook, na.rm = TRUE),
+##    Instagram_mean = mean(Instagram, na.rm = TRUE),
+##    TikTok_mean = mean(TikTok, na.rm = TRUE)
+##  ) %>%
+
+##print(summary_stats)
+```
+
+## Draft bar chart for specific platform usage by demographic use
+
+``` r
+# Code for a visualization
+
+## data_long <- demographic %>%
+##  pivot_longer(cols = c(Instagram, TikTok),
+##               values_to = "Percent_Using")
+
+##data_long <- data_long %>%
+##  mutate(Percent_Using = as.numeric(gsub("%", "", Percent_Using)))
+
+##ggplot(data_long, aes(x = Percent_Using, y = Group, fill = Platform)) +
+##  geom_col(position = "dodge") +
+##  scale_x_continuous(labels = function(x) paste0(x, "%"),
+##                     limits = c(0, 100),
+##                     breaks = seq(0, 100, by = 10)) + 
+##  labs(title = "Social Media Usage by Age Group",
+##       x = "Percentage Using Platform",
+##       y = "Demographic Group") +
+##  theme_minimal()
+```
+
+This chart helps answer key exploratory questions like: - Which
+demographic groups prefer which social media platforms? - Are there
+clear differences in usage patterns by race or gender?
