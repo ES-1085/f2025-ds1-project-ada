@@ -57,18 +57,6 @@ demographic <- read_csv("../data/social_media_usage_among_demographic_groups - S
 
 ``` r
 # Print the output of glimpse() or skim()
-demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
-```
-
-    ## Rows: 6 Columns: 12
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (12): Group, Youtube, Facebook, Instagram, Pinterest, TikTok, LinkedIn, ...
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
 glimpse(demographic)
 ```
 

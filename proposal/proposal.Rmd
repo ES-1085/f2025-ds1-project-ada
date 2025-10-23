@@ -32,9 +32,8 @@ library(readr)
 social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", skip = 2, n_max = 17)
 
 demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
-# Print the output of glimpse() or skim()
-demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
 
+# Print the output of glimpse() or skim()
 glimpse(demographic)
 skim(demographic)
 
