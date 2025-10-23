@@ -17,26 +17,23 @@ library(skimr)
 Our project explores trends in the popularity of various social media
 platforms among U.S. adults over time. The research question guiding
 this analysis is: *How has social media usage evolved from 2012-2024,
-and what patterns can be sen acros different platforms?* By examining
+and what patterns can be seen across different platforms?* By examining
 changes in user engagement across platforms like YouTube, Facebook,
 Instagram, TikTok, Reddit, and others, this project aims to understand
 how digital behaviors and communication preferences have shifted over
 the past decade.
 
-The data set used for this project was obtained from \_\_\_\_. The data
-was collected through **nationally representative surveys** of U.S.
-adults, asking what social media platforms they use. Each row represents
-survey results for a specific *year*, while the columns correspond to
-the **percentage of U.S. adult who reported using each platform.** This
-dataset provides us with a clear basis for a quantitative analysis of
-social media trends, allowing for comparisons across years and platforms
-to identify long-term evolution in digitial media engagement.
+The data set used for this project was obtained from Pew Research
+Center. The data was collected through **nationally representative
+surveys** of U.S. adults, asking what social media platforms they use.
+Each row represents survey results for a specific *year*, while the
+columns correspond to the **percentage of U.S. adult who reported using
+each platform.** This dataset provides us with a clear basis for a
+quantitative analysis of social media trends, allowing for comparisons
+across years and platforms to identify long-term evolution in digitial
+media engagement.
 
 ## 2. Data
-
-Text goes here. Place your data in the /data folder, and add dimensions
-and codebook to the README in that folder. Then print out the output of
-glimpse() or skim() of your data frame.
 
 ``` r
 # Code goes here
@@ -132,11 +129,6 @@ Other data needed: - Engagement data (i.e. average time spent, purpose
 of use) - Regional data to assess geographic patterns This would give us
 more context about why certain groups prefer specific platforms.
 
-- Very preliminary exploratory data analysis, including some summary
-  statistics and visualizations, along with some explanation on how they
-  help you learn more about your data. (You can add to these later as
-  you work on your project.)
-
 The types of visualizations we want to use: - Bar Chart – to compare
 platform usage across `group` - Stacked Bar Chart – to show the overall
 distribution of platform use by `gender` or `race` - Heatmap – to
@@ -155,8 +147,9 @@ demographic_clean <- demographic %>%
     ## Caused by warning:
     ## ! NAs introduced by coercion
 
+## Example of summary statistics
+
 ``` r
-# Code to calculate summary statistics
 ## summary_stats <- demographic_clean %>%
 ##   group_by(Group) %>%
 ##  summarise(
@@ -168,7 +161,10 @@ demographic_clean <- demographic %>%
 ##print(summary_stats)
 ```
 
-## Draft bar chart for specific platform usage by demographic use
+This is a sample of summary statistics that can be used to which
+platforms are most popular across U.S. adults.
+
+# Draft bar chart for specific platform usage by demographic use
 
 ``` r
 # Code for a visualization
