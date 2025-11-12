@@ -1,6 +1,6 @@
 ---
 title: "Project memo"
-author: "Team name"
+author: "ADA"
 output: github_document
 ---
 
@@ -9,17 +9,64 @@ This document should contain a detailed account of the data clean up for your da
 ```{r load-packages, message = FALSE}
 library(tidyverse)
 library(broom)
+library(skimr)
 ```
 
 ## Data Clean Up Steps for Overall Data
 
-### Step 1: _________
+### Step 1: Cleaning both data sets
 
-```{r}
+```{r clean-demographic}
+demographic_clean <- demographic %>%
+  # ensure Group is character 
+  mutate(Group = as.character(Group)) %>%
+  
+  # convert only columns that actually contain "%" into numeric
+  mutate(across(
+    .cols = where(~ any(grepl("%", .x, fixed = TRUE), na.rm = TRUE)),
+    .fns  = ~ as.numeric(gsub("%", "", .x))
+  )) %>%
+  
+  # create gender and race columns
+  mutate(
+    gender = case_when(
+      Group %in% c("Men", "Women") ~ Group,
+      TRUE ~ NA_character_
+    ),
+    race = case_when(
+      Group %in% c("White", "Black", "Hispanic", "Asian") ~ Group,
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  
+  # reshape to long format
+  pivot_longer(
+    cols = -c(Group, gender, race),
+    names_to  = "platform",
+    values_to = "percent"
+  ) %>%
+  filter(!is.na(platform)) 
 
 ```
 
-### Step 2: ________
+```{r clean-social}
+social_clean <- social %>%
+  mutate(across(where(is.character), 
+                ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .))))) %>%
+  
+  # Keep year column, rename if needed
+  rename(date = Year) %>%
+  
+  # Reshape to long format
+  pivot_longer(
+    cols = -date,
+    names_to = "platform",
+    values_to = "percent"
+  ) %>%
+  mutate(year = lubridate::year(lubridate::mdy(date)))
+```
+
+### Step 2: Visualization for presentation on 11/13
 
 ## Plots
 
@@ -47,7 +94,7 @@ ggsave("example-starwars-wide.png", width = 6, height = 4)
 
 
 
-### Plot 1: _________
+### Plot 1: Platform Usage by Race
 
 #### Data cleanup steps specific to plot 1
 
@@ -60,8 +107,23 @@ These data cleaning sections are optional and depend on if you have some data cl
 
 #### Final Plot 1
 
-```{r}
+```{r platform-usage-by-race}
+ggplot(demographic_clean %>% filter(!is.na(race)), 
+       aes(x = platform, y = percent, fill = race)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Social Media Usage by Platform and Race",
+    x = "Social Media Platform",
+    y = "Usage (%)",
+    fill = "Race"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5)
+  )
 
+ggsave("platform-by-race.png", width = 4, height = 4)
 ```
 
 
