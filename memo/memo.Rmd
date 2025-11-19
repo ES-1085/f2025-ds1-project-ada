@@ -109,25 +109,68 @@ These data cleaning sections are optional and depend on if you have some data cl
 
 ```{r platform-usage-by-race}
 ggplot(demographic_clean %>% filter(!is.na(race)), 
-       aes(x = platform, y = percent, fill = race)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(
-    title = "Social Media Usage by Platform and Race",
-    x = "Social Media Platform",
-    y = "Usage (%)",
-    fill = "Race"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    plot.title = element_text(face = "bold", size = 16, hjust = 0.5)
-  )
-
+       aes(x = platform, y = percent, fill = race)) + 
+  geom_bar(stat = "identity", position = "dodge") + 
+  labs( title = "Social Media Usage by Platform and Race", 
+        x = "Social Media Platform", 
+        y = "Usage (%)", fill = "Race" ) + 
+  theme_minimal(base_size = 13) + 
+  theme( axis.text.x = element_text(angle = 45, hjust = 1),
+         plot.title = element_text(face = "bold", size = 16, hjust = 0.5) ) 
 ggsave("platform-by-race.png", width = 4, height = 4)
+
 ```
 
 
-### Plot 2: _________
+### Plot 2: Platform Usage by Gender
+
+```{r platform-usage-by-gender}
+ggplot(demographic_clean %>% filter(!is.na(gender)), 
+       aes(x = gender, y = percent, fill = gender)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
+  
+  # --- ADD LABELS ON TOP OF BARS ---
+  geom_text(
+    aes(label = percent),
+    position = position_dodge(width = 0.9),
+    vjust = -0.3,
+    size = 2.5
+  ) +
+  
+  scale_fill_manual(values = c(
+    "Men" = "#0072B2",
+    "Women" = "#CC79A7"
+  )) +
+  
+  # no y-axis labels needed anymore
+  scale_y_continuous(
+    breaks = c(0, 25, 50, 75, 100),
+    limits = c(0, 100),       # give extra headroom for text labels
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  
+  labs(
+    title = "Social Media Usage by Platform and Gender",
+    x = "Gender",
+    y = "Usage (%)"
+  ) +
+  
+  facet_wrap(~ platform, nrow = 3) +
+  
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.y = element_blank(),   # remove y-axis numbers
+    axis.ticks.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid.major.y = element_line(color = "gray80"),
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(size = 8, angle = 0),
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    legend.position = "none"        
+  )
+
+ggsave("platform-by-gender-facet.png", width = 4, height = 4)
+```
 
 ### Plot 3: ___________
 
