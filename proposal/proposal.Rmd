@@ -16,14 +16,12 @@ library(skimr)
 
 ## 1. Introduction
 
-Our project explores trends in the popularity of various social media platforms among U.S. adults over time. The research question guiding this analysis is: *How has social media usage evolved from 2012-2024, and what patterns can be sen acros different platforms?* By examining changes in user engagement across platforms like YouTube, Facebook, Instagram, TikTok, Reddit, and others, this project aims to understand how digital behaviors and communication preferences have shifted over the past decade.
+Our project explores trends in the popularity of various social media platforms among U.S. adults over time. The research question guiding this analysis is: *How has social media usage evolved from 2012-2024, and what patterns can be seen across different platforms?* By examining changes in user engagement across platforms like YouTube, Facebook, Instagram, TikTok, Reddit, and others, this project aims to understand how digital behaviors and communication preferences have shifted over the past decade.
 
-The data set used for this project was obtained from ____. The data was collected through **nationally representative surveys** of U.S. adults, asking what social media platforms they use. Each row represents survey results for a specific *year*, while the columns correspond to the **percentage of U.S. adult who reported using each platform.** This dataset provides us with a clear basis for a quantitative analysis of social media trends, allowing for comparisons across years and platforms to identify long-term evolution in digitial media engagement.
+The data set used for this project was obtained from Pew Research Center. The data was collected through **nationally representative surveys** of U.S. adults, asking what social media platforms they use. Each row represents survey results for a specific *year*, while the columns correspond to the **percentage of U.S. adult who reported using each platform.** This dataset provides us with a clear basis for a quantitative analysis of social media trends, allowing for comparisons across years and platforms to identify long-term evolution in digitial media engagement.
 
 
 ## 2. Data
-
-Text goes here. Place your data in the /data folder, and add dimensions and codebook to the README in that folder. Then print out the output of glimpse() or skim() of your data frame.
 
 ```{r}
 # Code goes here
@@ -37,7 +35,6 @@ demographic <- read_csv("../data/social_media_usage_among_demographic_groups - S
 # Print the output of glimpse() or skim()
 glimpse(demographic)
 skim(demographic)
-
 
 ```
 
@@ -55,60 +52,57 @@ Other data needed:
 - Regional data to assess geographic patterns
 This would give us more context about why certain groups prefer specific platforms.
 
-- Very preliminary exploratory data analysis, including some summary statistics and visualizations, along with some explanation on how they help you learn more about your data. (You can add to these later as you work on your project.)
-
-
-
 The types of visualizations we want to use: 
 - Bar Chart – to compare platform usage across `group`
 - Stacked Bar Chart – to show the overall distribution of platform use by `gender` or `race`
 - Heatmap – to visualize the correlation between `group` and `platform` popularity
 - Trend Line Chart - to show how `platform` popularity changes over time
 
-## Clean the demographic data to take out percentages
+## Transform numbers to percents
 ```{r clean-demographic}
 demographic_clean <- demographic %>%
-  mutate(across(where(is.character), ~ as.numeric(gsub("%", "", .))))
+  # ensure Group is character 
+  mutate(Group = as.character(Group))
+```
+
+## Clean the social data
+```{r clean-social}
+social_clean <- social %>%
+  mutate(across(where(is.character), 
+                ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .)))))
 ```
 
 
-```{r }
-# Code to calculate summary statistics
-## summary_stats <- demographic_clean %>%
-##   group_by(Group) %>%
-##  summarise(
-##    Facebook_mean = mean(Facebook, na.rm = TRUE),
-##    Instagram_mean = mean(Instagram, na.rm = TRUE),
-##    TikTok_mean = mean(TikTok, na.rm = TRUE)
-##  ) %>%
+## Example of summary statistics
 
-##print(summary_stats)
+```{r summary-stats}
+summary_stats <- demographic_clean %>%
+  group_by(race, platform) %>%
+  summarise(mean_percent = mean(percent, na.rm = TRUE))
+
+print(summary_stats)
 ```
-
+This is a sample of summary statistics that can be used to which platforms are most popular across U.S. adults. 
 
 # Draft bar chart for specific platform usage by demographic use
 
 ```{r platform-usage-by-group}
-# Code for a visualization
-
-## data_long <- demographic %>%
-##  pivot_longer(cols = c(Instagram, TikTok),
-##               values_to = "Percent_Using")
-
-##data_long <- data_long %>%
-##  mutate(Percent_Using = as.numeric(gsub("%", "", Percent_Using)))
-
-##ggplot(data_long, aes(x = Percent_Using, y = Group, fill = Platform)) +
-##  geom_col(position = "dodge") +
-##  scale_x_continuous(labels = function(x) paste0(x, "%"),
-##                     limits = c(0, 100),
-##                     breaks = seq(0, 100, by = 10)) + 
-##  labs(title = "Social Media Usage by Age Group",
-##       x = "Percentage Using Platform",
-##       y = "Demographic Group") +
-##  theme_minimal()
-
+ggplot(demographic_clean %>% filter(!is.na(Group)), 
+       aes(x = platform, y = percent, fill = Group)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Social Media Usage by Platform and Race",
+    x = "Social Media Platform",
+    y = "Usage (%)",
+    fill = "Race"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5)
+  )
 ```
+<<<<<<< HEAD
 This chart helps answer key exploratory questions like:
 - Which demographic groups prefer which social media platforms?
 - Are there clear differences in usage patterns by race or gender?
@@ -119,3 +113,8 @@ Graph for Figure 2
 ###
 ```
 
+=======
+This will help us answer questions like:
+- Which social media platforms are most popular overall?
+- How does TikTok (or any platform) usage compare between demographic groups?
+>>>>>>> 81ff063759d043cd51bf0911f72057f49ecf672e
