@@ -131,7 +131,8 @@ ggplot(demographic_clean %>% filter(!is.na(race)),
   
   labs(
     title = "Social Media Usage by Platform and Race",
-    subtitle = "Data obtained through a survey of adults across the US",
+    subtitle = "Data obtained through a survey of 5,022 adults across the US",
+    caption = paste("This data comes from Pew Research Center: https://www.pewresearch.org/internet/2025/11/20/americans-social-media-use-2025/"), 
     x = "Race",
     y = "Usage (%)"
   ) +
@@ -153,10 +154,11 @@ ggplot(demographic_clean %>% filter(!is.na(race)),
     panel.grid.major.y = element_line(color = "gray80"),
     panel.grid.minor = element_blank(),
     
-    axis.text.x = element_text(size = 8, angle = 45, hjust = 1),
+    axis.text.x = element_text(size = 7, angle = 45, hjust = 1),
 
     plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
-    plot.subtitle = element_text(size = 8, hjust = 0.5, margin = margin(b = 8)),
+    plot.subtitle = element_text(size = 8, hjust = 0.5, margin = margin(b = 8)), 
+    plot.caption = element_text(size = 6, hjust = 0.5, margin = margin(b = 8)),
 
     legend.position = "none"
   )
@@ -197,7 +199,8 @@ ggplot(demographic_sorted %>% filter(!is.na(gender)),
   ) +
   labs(
     title = "Social Media Usage by Platform and Gender",
-    subtitle = "Data obtained through a survey of adults across the US",
+    subtitle = "Data obtained through a survey of 5,022 adults across the US",
+    caption = paste("This data comes from Pew Research Center: https://www.pewresearch.org/internet/2025/11/20/americans-social-media-use-2025/"), 
     x = "Gender",
     y = "Usage (%)"
   ) +
@@ -212,6 +215,7 @@ ggplot(demographic_sorted %>% filter(!is.na(gender)),
     axis.text.x = element_text(size = 8),
     plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
     plot.subtitle = element_text(size = 8, hjust = 0.5, margin = margin(b = 8)),
+    plot.caption = element_text(size = 6, hjust = 0.5, margin = margin(b = 8)),
     legend.position = "none"
   )
 
