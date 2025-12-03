@@ -105,4 +105,4 @@ ggplot(demographic_clean %>% filter(!is.na(Group)),
 ```
 This chart helps answer key exploratory questions like:
 - Which demographic groups prefer which social media platforms?
-- Are there clear differences in usage patterns by race or gender?
+- Are there clear differences in usage patterns by race or gender?!
