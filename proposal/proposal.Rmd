@@ -104,3 +104,20 @@ This is a sample of summary statistics that can be used to which platforms are m
 This chart helps answer key exploratory questions like:
 - Which demographic groups prefer which social media platforms?
 - Are there clear differences in usage patterns by race or gender?
+
+```{r visual}
+# once you get the clean data, you could do a bar chart to see how each group uses social media
+# you could do this using the facet
+ggplot(demographic_clean, aes(x = Group, y = usage, color = social_media)) +
+  geom_point(alpha = 0.7) +
+  facet_wrap(~ social_media) +
+  labs(
+    title = "Social media usage by group",
+    subtitle = "Faceted by social media platform",
+    x = "Demographic group",
+    y = "Percentage of use",
+    color = "Social media platform"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
