@@ -59,66 +59,50 @@ The types of visualizations we want to use:
 - Heatmap – to visualize the correlation between `group` and `platform` popularity
 - Trend Line Chart - to show how `platform` popularity changes over time
 
-## Clean the demographic data to take out percentages
+## Transform numbers to percents
 ```{r clean-demographic}
 demographic_clean <- demographic %>%
-  mutate(across(where(is.character), ~ as.numeric(gsub("%", "", .))))
+  # ensure Group is character 
+  mutate(Group = as.character(Group))
 ```
+
+## Clean the social data
+```{r clean-social}
+social_clean <- social %>%
+  mutate(across(where(is.character), 
+                ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .)))))
+```
+
+
 ## Example of summary statistics
 
-```{r }
-## summary_stats <- demographic_clean %>%
-##   group_by(Group) %>%
-##  summarise(
-##    Facebook_mean = mean(Facebook, na.rm = TRUE),
-##    Instagram_mean = mean(Instagram, na.rm = TRUE),
-##    TikTok_mean = mean(TikTok, na.rm = TRUE)
-##  ) %>%
+```{r summary-stats}
+summary_stats <- demographic_clean %>%
+  group_by(race, platform) %>%
+  summarise(mean_percent = mean(percent, na.rm = TRUE))
 
-##print(summary_stats)
+print(summary_stats)
 ```
 This is a sample of summary statistics that can be used to which platforms are most popular across U.S. adults. 
 
 # Draft bar chart for specific platform usage by demographic use
 
 ```{r platform-usage-by-group}
-# Code for a visualization
-
-## data_long <- demographic %>%
-##  pivot_longer(cols = c(Instagram, TikTok),
-##               values_to = "Percent_Using")
-
-##data_long <- data_long %>%
-##  mutate(Percent_Using = as.numeric(gsub("%", "", Percent_Using)))
-
-##ggplot(data_long, aes(x = Percent_Using, y = Group, fill = Platform)) +
-##  geom_col(position = "dodge") +
-##  scale_x_continuous(labels = function(x) paste0(x, "%"),
-##                     limits = c(0, 100),
-##                     breaks = seq(0, 100, by = 10)) + 
-##  labs(title = "Social Media Usage by Age Group",
-##       x = "Percentage Using Platform",
-##       y = "Demographic Group") +
-##  theme_minimal()
-
+ggplot(demographic_clean %>% filter(!is.na(Group)), 
+       aes(x = platform, y = percent, fill = Group)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Social Media Usage by Platform and Race",
+    x = "Social Media Platform",
+    y = "Usage (%)",
+    fill = "Race"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5)
+  )
 ```
 This chart helps answer key exploratory questions like:
 - Which demographic groups prefer which social media platforms?
 - Are there clear differences in usage patterns by race or gender?
-
-```{r visual}
-# once you get the clean data, you could do a bar chart to see how each group uses social media
-# you could do this using the facet
-ggplot(demographic_clean, aes(x = Group, y = usage, color = social_media)) +
-  geom_point(alpha = 0.7) +
-  facet_wrap(~ social_media) +
-  labs(
-    title = "Social media usage by group",
-    subtitle = "Faceted by social media platform",
-    x = "Demographic group",
-    y = "Percentage of use",
-    color = "Social media platform"
-  ) +
-  theme_minimal(base_size = 12)
-```
-

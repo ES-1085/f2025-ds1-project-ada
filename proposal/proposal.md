@@ -161,9 +161,12 @@ demographic_clean <- demographic %>%
 ##print(summary_stats)
 ```
 
+<<<<<<< HEAD
+=======
 This is a sample of summary statistics that can be used to which
 platforms are most popular across U.S. adults.
 
+>>>>>>> 81ff063759d043cd51bf0911f72057f49ecf672e
 # Draft bar chart for specific platform usage by demographic use
 
 ``` r
@@ -190,3 +193,10 @@ platforms are most popular across U.S. adults.
 This chart helps answer key exploratory questions like: - Which
 demographic groups prefer which social media platforms? - Are there
 clear differences in usage patterns by race or gender?
+
+Graph for Figure 2
+
+``` r
+#ggplot(df_long, aes(x = Platform, y = Usage, group = Group)) + geom_col(aes(fill = Group), position = position_dodge(width = 0.8), width = 0.55, alpha = 0.85) + geom_line(aes(color = Group), linewidth = 1.4, position = position_dodge(width = 0.8), lineend = "round") + geom_point(aes(color = Group), size = 4, position = position_dodge(width = 0.8)) + scale_fill_manual(values = c("Men" = cb_blue, "Women" = cb_pink)) + scale_color_manual(values = c("Men" = cb_blue, "Women" = cb_pink)) + labs( title = "Social Media Usage by Gender", x = "", y = "%") + theme_minimal(base_size = 16) + theme( plot.title = element_text(face = "bold", hjust = 0.5), axis.text.x = element_text(angle = 40, hjust = 1), legend.position = "top")
+###
+```
