@@ -231,7 +231,7 @@ social_plot <- social_clean %>%
   filter(!is.na(percent)) %>%
   mutate(platform = factor(platform, levels = platform_order))
 
-ggplot(social_plot, aes(x = factor(year), y = percent, fill = platform)) +
+ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ platform, nrow = 3) +
   scale_y_continuous(
@@ -245,7 +245,12 @@ ggplot(social_plot, aes(x = factor(year), y = percent, fill = platform)) +
     y = "Usage (%)",
     caption = "Data: Pew Research Center, surveys of U.S. adults 2012–2024."
   ) +
-  scale_fill_manual(values = rep("#0072B2", length(platform_order))) +
+  
+  scale_fill_gradient(
+    low = "#9ecae1",   # light blue
+    high = "#08519c"   # dark navy blue
+  ) +
+  
   theme_minimal(base_size = 10) +
   theme(
     legend.position = "none",
