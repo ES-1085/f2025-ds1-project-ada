@@ -1,4 +1,5 @@
 Social Media Usage by U.S. Adults
+
 by Dane Jones, Andrew Batista, and Anais Reneaum Lavoie
 
 ## Summary
@@ -52,7 +53,7 @@ reflecting shifts in digital patterns and platform relevance over time.
 
 ## Handout
 
-Our handout can be found [here](handout/handout.pdf). You can update the filename and extension of your handout, currently it is called handout.pdf
+Our handout can be found [here](https://github.com/user-attachments/files/23967191/DCS.Handout.pdf)
 
 ## Memo
 
