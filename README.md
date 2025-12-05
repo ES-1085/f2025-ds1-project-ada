@@ -51,6 +51,12 @@ Reddit, and BeReal show clear upward trajectories. Longer established
 platforms like Twitter (now X) show flatter or decreasing usage, 
 reflecting shifts in digital patterns and platform relevance over time.
 
+We did not choose to include data for the different age gaps and their 
+usage, however if we did, we could expect to see newer platforms such as TikTok, 
+Snapchat, and Instagram be more popular among younger adults (18-25), as they 
+are still very active on social media. We could also expect to see middle aged 
+adults (30s-40s) to have high usage on older platforms such as Facebook. 
+
 ## Handout
 
 Our handout can be found [here](https://github.com/user-attachments/files/23967191/DCS.Handout.pdf)
