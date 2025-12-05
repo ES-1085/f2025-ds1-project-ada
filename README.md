@@ -30,5 +30,5 @@ sure to note the retrieval date.
 
 ## References
 
-List any references here. You should, at a minimum, list your data
-source.
+Gottfried, Jeffrey. “Americans’ Social Media Use.” Pew Research Center, Pew Research Center, 31 Jan. 2024, 
+    www.pewresearch.org/internet/2024/01/31/americans-social-media-use/. 
