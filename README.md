@@ -15,7 +15,7 @@ your project.
 
 ## Handout
 
-Our handout can be found [here](handout/handout.pdf). You can update the filename and extension of your handout, currently it is called handout.pdf
+Our handout can be found [here][DCS Handout.pdf](https://github.com/user-attachments/files/23966517/DCS.Handout.pdf).
 
 ## Memo
 
