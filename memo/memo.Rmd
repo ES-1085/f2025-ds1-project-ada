@@ -233,6 +233,3 @@ ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
 ggsave("platform-by-year-barchart.png", width = 6, height = 4)
 
 ```
-
-### Plot 4: ___________ 
-
