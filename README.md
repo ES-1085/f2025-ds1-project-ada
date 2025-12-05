@@ -1,5 +1,4 @@
-Project title
-================
+Social Media Usage by U.S. Adults
 by Dane Jones, Andrew Batista, and Anais Reneaum Lavoie
 
 ## Summary
@@ -60,11 +59,6 @@ Our handout can be found [here](handout/handout.pdf). You can update the filenam
 A link to the code and how we created our graphics in our memo can be found [here](memo/memo.html).
 
 ## Data
-
-Include a citation for your data here. See
-<http://libraryguides.vu.edu.au/c.php?g=386501&p=4347840> for guidance
-on proper citation for datasets. If you got your data off the web, make
-sure to note the retrieval date.
 
 Gottfried, Jeffrey. “Americans’ Social Media Use.” Pew Research Center, Pew Research Center, 31 Jan. 2024, 
     www.pewresearch.org/internet/2024/01/31/americans-social-media-use/.
