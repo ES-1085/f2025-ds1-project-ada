@@ -15,7 +15,7 @@ your project.
 
 ## Handout
 
-Our handout can be found [here][DCS Handout.pdf](https://github.com/user-attachments/files/23966517/DCS.Handout.pdf).
+Our handout can be found [here](https://github.com/user-attachments/files/23966517/DCS.Handout.pdf).
 
 ## Memo
 
