@@ -4,8 +4,6 @@ author: "ADA"
 output: github_document
 ---
 
-This document should contain a detailed account of the data clean up for your data and the design choices you are making for your plots. For instance you will want to document choices you've made that were intentional for your graphic, e.g. color you've chosen for the plot. Think of this document as a code script someone can follow to reproduce the data cleaning steps and graphics in your handout.
-
 ```{r load-packages, message = FALSE}
 library(tidyverse)
 library(broom)
@@ -49,58 +47,28 @@ demographic_clean <- demographic %>%
 
 ```
 
-```{r clean_social}
+```{r clean-social}
 social_clean <- social %>%
+  mutate(across(where(is.character), 
+                ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .))))) %>%
+  
+  # Keep year column, rename if needed
   rename(date = Year) %>%
-  mutate(across(
-    .cols = -date,
-    .fns = ~ as.numeric(gsub("%", "", .x))
-  )) %>%
+  
+  # Reshape to long format
   pivot_longer(
     cols = -date,
     names_to = "platform",
     values_to = "percent"
   ) %>%
   mutate(year = lubridate::year(lubridate::mdy(date)))
-
 ```
 
 ### Step 2: Visualization for presentation on 11/13
 
 ## Plots
 
-### ggsave example for saving plots
-
-```{r starwars ggsave example}
-p1 <- starwars |>
-  filter(mass < 1000, 
-         species %in% c("Human", "Cerean", "Pau'an", "Droid", "Gungan")) |>
-  ggplot() +
-  geom_point(aes(x = mass, 
-                 y = height, 
-                 color = species)) +
-  labs(x = "Weight (kg)", 
-       y = "Height (m)",
-       color = "Species",
-       title = "Weight and Height of Select Starwars Species",
-       caption = paste("This data comes from the starwars api: https://swapi.py43.com"))
-
-
-ggsave("example-starwars.png", width = 4, height = 4)
-
-ggsave("example-starwars-wide.png", width = 6, height = 4)
-```
-
-
-
 ### Plot 1: Platform Usage by Race
-
-#### Data cleanup steps specific to plot 1
-
-These data cleaning sections are optional and depend on if you have some data cleaning steps specific to a particular plot
-
-
-#### Final Plot 1
 
 ```{r platform-usage-by-race, fig.alt = "Faceted bar chart showing social media usage by platform and race. Each facet represents a platform, the x-axis shows racial groups, the y-axis shows usage percentages, bars are colored by race, and labels on each bar show exact percentages. The purpose is to compare differences in platform engagement across racial groups among U.S. adults."}
 
@@ -218,7 +186,9 @@ ggsave("platform-by-gender-facet.png", width = 4, height = 4)
 
 ```
 
+
 ### Plot 3: Platform Usage by Year
+
 ```{r platform-usage-by-year, fig.alt = "Faceted bar chart showing social media usage over time by platform. Each facet represents a platform, the x-axis shows survey year, the y-axis shows usage percentages, and bars are colored by platform."}
 
 platform_order <- c(
@@ -263,10 +233,6 @@ ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
 ggsave("platform-by-year-barchart.png", width = 6, height = 4)
 
 ```
-
-
-```
-
 
 ### Plot 4: ___________ 
 
