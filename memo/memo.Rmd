@@ -198,7 +198,7 @@ platform_order <- c(
 )
 
 social_plot <- social_clean %>%
-  filter(!is.na(percent)) %>%
+  filter(!is.na(percent), !is.na(year)) %>%
   mutate(platform = factor(platform, levels = platform_order))
 
 ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
