@@ -1,64 +1,282 @@
 Project memo
 ================
-Team name
-
-This document should contain a detailed account of the data clean up for
-your data and the design choices you are making for your plots. For
-instance you will want to document choices you’ve made that were
-intentional for your graphic, e.g. color you’ve chosen for the plot.
-Think of this document as a code script someone can follow to reproduce
-the data cleaning steps and graphics in your handout.
+ADA
 
 ``` r
 library(tidyverse)
 library(broom)
+library(skimr)
 ```
 
 ## Data Clean Up Steps for Overall Data
 
-### Step 1: \_\_\_\_\_\_\_\_\_
+### Step 1: Cleaning both data sets
 
-### Step 2: \_\_\_\_\_\_\_\_
+``` r
+# Code goes here
+# Read in your data file
+setwd("/cloud/project/proposal")
+library(readr)
+social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", skip = 2, n_max = 17)
+```
+
+    ## Rows: 17 Columns: 13
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (13): Year, YouTube, Facebook, Instagram, Pinterest, TikTok, LinkedIn, W...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
+```
+
+    ## Rows: 6 Columns: 12
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (12): Group, Youtube, Facebook, Instagram, Pinterest, TikTok, LinkedIn, ...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+demographic_clean <- demographic %>%
+  # ensure Group is character 
+  mutate(Group = as.character(Group)) %>%
+  
+  # convert only columns that actually contain "%" into numeric
+  mutate(across(
+    .cols = where(~ any(grepl("%", .x, fixed = TRUE), na.rm = TRUE)),
+    .fns  = ~ as.numeric(gsub("%", "", .x))
+  )) %>%
+  
+  # create gender and race columns
+  mutate(
+    gender = case_when(
+      Group %in% c("Men", "Women") ~ Group,
+      TRUE ~ NA_character_
+    ),
+    race = case_when(
+      Group %in% c("White", "Black", "Hispanic", "Asian") ~ Group,
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  
+  # reshape to long format
+  pivot_longer(
+    cols = -c(Group, gender, race),
+    names_to  = "platform",
+    values_to = "percent"
+  ) %>%
+  filter(!is.na(platform)) 
+```
+
+``` r
+social_clean <- social %>%
+  mutate(across(where(is.character), 
+                ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .))))) %>%
+  
+  # Keep year column, rename if needed
+  rename(date = Year) %>%
+  
+  # Reshape to long format
+  pivot_longer(
+    cols = -date,
+    names_to = "platform",
+    values_to = "percent"
+  ) %>%
+  mutate(year = lubridate::year(lubridate::mdy(date)))
+```
+
+    ## Warning: There was 1 warning in `mutate()`.
+    ## ℹ In argument: `across(...)`.
+    ## Caused by warning:
+    ## ! NAs introduced by coercion
+
+### Step 2: Visualization for presentation on 11/13
 
 ## Plots
 
-### ggsave example for saving plots
+### Plot 1: Platform Usage by Race
 
 ``` r
-p1 <- starwars |>
-  filter(mass < 1000, 
-         species %in% c("Human", "Cerean", "Pau'an", "Droid", "Gungan")) |>
-  ggplot() +
-  geom_point(aes(x = mass, 
-                 y = height, 
-                 color = species)) +
-  labs(x = "Weight (kg)", 
-       y = "Height (m)",
-       color = "Species",
-       title = "Weight and Height of Select Starwars Species",
-       caption = paste("This data comes from the starwars api: https://swapi.py43.com"))
+cb_palette <- c(
+  "Asian" = "#0072B2",
+  "Black" = "#E69F00",
+  "Hispanic" = "#009E73",
+  "White" = "#D55E00",
+  "Other" = "#CC79A7"
+)
 
+ggplot(demographic_clean %>% filter(!is.na(race)),
+       aes(x = race, y = percent, fill = race)) +
+  
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
 
-ggsave("example-starwars.png", width = 4, height = 4)
+  geom_text(
+    aes(label = percent),
+    position = position_dodge(width = 0.9),
+    vjust = -0.3,
+    size = 1.8
+  ) +
+  
+  labs(
+    title = "Social Media Usage by Platform and Race",
+    subtitle = "Data obtained through a survey of 5,022 adults across the US",
+    caption = paste("This data comes from Pew Research Center: https://www.pewresearch.org/internet/2025/11/20/americans-social-media-use-2025/"), 
+    x = "Race",
+    y = "Usage (%)"
+  ) +
+  
+  scale_fill_manual(values = cb_palette) +
+  
+  facet_wrap(~ platform, nrow = 3) +
+  
+  scale_y_continuous(
+    limits = c(0, 100),
+    expand = expansion(mult = c(0, 0.07))
+  ) +
+  
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    
+    panel.grid.major.y = element_line(color = "gray80"),
+    panel.grid.minor = element_blank(),
+    
+    axis.text.x = element_text(size = 7, angle = 45, hjust = 1),
 
-ggsave("example-starwars-wide.png", width = 6, height = 4)
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
+    plot.subtitle = element_text(size = 8, hjust = 0.5, margin = margin(b = 8)), 
+    plot.caption = element_text(size = 6, hjust = 0.5, margin = margin(b = 8)),
+
+    legend.position = "none"
+  )
 ```
 
-### Plot 1: \_\_\_\_\_\_\_\_\_
-
-#### Data cleanup steps specific to plot 1
+<img src="memo_files/figure-gfm/platform-usage-by-race-1.png" alt="Faceted bar chart showing social media usage by platform and race. Each facet represents a platform, the x-axis shows racial groups, the y-axis shows usage percentages, bars are colored by race, and labels on each bar show exact percentages. The purpose is to compare differences in platform engagement across racial groups among U.S. adults."  />
 
 ``` r
-# This section is optional and depends on if you have some data cleaning steps specific to a particular plot
+ggsave("platform-by-race.png", width = 4, height = 4)
 ```
 
-#### Final Plot 1
+### Plot 2: Platform Usage by Gender
 
-### Plot 2: \_\_\_\_\_\_\_\_\_
+``` r
+# compute female usage for each platform 
+female_usage <- demographic_clean %>%
+  filter(gender == "Women") %>%
+  select(platform, female_percent = percent)
 
-### Plot 3: \_\_\_\_\_\_\_\_\_\_\_
+# join back + reorder platform factor by female usage 
+demographic_sorted <- demographic_clean %>%
+  left_join(female_usage, by = "platform") %>%
+  mutate(platform = reorder(platform, female_percent))
 
-Add more plot sections as needed. Each project should have at least 3
-plots, but talk to me if you have fewer than 3.
+ggplot(demographic_sorted %>% filter(!is.na(gender)),
+       aes(x = gender, y = percent, fill = gender)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
+  geom_text(
+    aes(label = percent),
+    position = position_dodge(width = 0.9),
+    vjust = -0.3,
+    size = 2.5
+  ) +
+  scale_fill_manual(values = c("Men" = "#0072B2", "Women" = "#CC79A7")) +
+  scale_y_continuous(
+    breaks = c(0, 25, 50, 75, 100),
+    limits = c(0, 100),
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  labs(
+    title = "Social Media Usage by Platform and Gender",
+    subtitle = "Data obtained through a survey of 5,022 adults across the US",
+    caption = paste("This data comes from Pew Research Center: https://www.pewresearch.org/internet/2025/11/20/americans-social-media-use-2025/"), 
+    x = "Gender",
+    y = "Usage (%)"
+  ) +
+  facet_wrap(~ platform, nrow = 3) +
+  theme_minimal(base_size = 10) +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid.major.y = element_line(color = "gray80"),
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(size = 8),
+    plot.title = element_text(face = "bold", size = 15, hjust = 0.5),
+    plot.subtitle = element_text(size = 8, hjust = 0.5, margin = margin(b = 8)),
+    plot.caption = element_text(size = 6, hjust = 0.5, margin = margin(b = 8)),
+    legend.position = "none"
+  )
+```
+
+<img src="memo_files/figure-gfm/platform-usage-by-gender-1.png" alt="Faceted bar chart showing social media usage by platform and gender. Each facet represents a platform, the x-axis shows men and women, the y-axis shows usage percentages, bars are colored by gender, and labels above each bar display exact usage values. The chart highlights differences in how men and women use social media platforms across adults in the United States."  />
+
+``` r
+ggsave("platform-by-gender-facet.png", width = 4, height = 4)
+```
+
+### Plot 3: Platform Usage by Year
+
+``` r
+platform_order <- c(
+  "YouTube", "Facebook", "Instagram", "Pinterest", "TikTok",
+  "LinkedIn", "WhatsApp", "Snapchat",
+  "X (formerly Twitter)", "Reddit", "BeReal", "Nextdoor"
+)
+
+social_clean <- social %>%
+  mutate(across(!Year,
+                ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .))))) %>%
+  rename(date = Year) %>%
+  pivot_longer(
+    cols = -date,
+    names_to  = "platform",
+    values_to = "percent"
+  ) %>%
+  mutate(year = lubridate::year(lubridate::mdy(date)))
+
+ggplot(social_clean, aes(x = factor(year), y = percent, fill = percent)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ platform, nrow = 3) +
+  scale_y_continuous(
+    limits = c(0, 100),
+    expand = expansion(mult = c(0, 0.07))
+  ) +
+  labs(
+    title = "Social Media Usage Over Time by Platform",
+    subtitle = "Percent of U.S. adults who ever use each platform, 2012–2024",
+    x = "Year",
+    y = "Usage (%)",
+    caption = "Data: Pew Research Center, surveys of U.S. adults 2012–2024."
+  ) +
+  scale_fill_gradient(
+    low  = "#9ecae1",
+    high = "#08519c"
+  ) +
+  theme_minimal(base_size = 10) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(size = 6, angle = 45, hjust = 1),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_line(color = "gray80"),
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5)
+  )
+```
+
+    ## Warning: Removed 121 rows containing missing values or values outside the scale range
+    ## (`geom_bar()`).
+
+<img src="memo_files/figure-gfm/platform-usage-by-year-1.png" alt="Faceted bar chart showing social media usage over time by platform. Each facet represents a platform, the x-axis shows survey year, the y-axis shows usage percentages, and bars are colored by platform."  />
+
+``` r
+ggsave("platform-by-year-barchart.png", width = 6, height = 4)
+```
+
+    ## Warning: Removed 121 rows containing missing values or values outside the scale range
+    ## (`geom_bar()`).
 
 ### Plot 4: \_\_\_\_\_\_\_\_\_\_\_

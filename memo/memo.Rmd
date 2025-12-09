@@ -15,6 +15,15 @@ library(skimr)
 ### Step 1: Cleaning both data sets
 
 ```{r clean-demographic}
+
+# Code goes here
+# Read in your data file
+setwd("/cloud/project/proposal")
+library(readr)
+social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", skip = 2, n_max = 17)
+
+demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
+
 demographic_clean <- demographic %>%
   # ensure Group is character 
   mutate(Group = as.character(Group)) %>%
@@ -197,11 +206,18 @@ platform_order <- c(
   "X (formerly Twitter)", "Reddit", "BeReal", "Nextdoor"
 )
 
-social_plot <- social_clean %>%
-  filter(!is.na(percent), !is.na(year)) %>%
-  mutate(platform = factor(platform, levels = platform_order))
+social_clean <- social %>%
+  mutate(across(!Year,
+                ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .))))) %>%
+  rename(date = Year) %>%
+  pivot_longer(
+    cols = -date,
+    names_to  = "platform",
+    values_to = "percent"
+  ) %>%
+  mutate(year = lubridate::year(lubridate::mdy(date)))
 
-ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
+ggplot(social_clean, aes(x = factor(year), y = percent, fill = percent)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ platform, nrow = 3) +
   scale_y_continuous(
@@ -215,12 +231,10 @@ ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
     y = "Usage (%)",
     caption = "Data: Pew Research Center, surveys of U.S. adults 2012–2024."
   ) +
-  
   scale_fill_gradient(
-    low = "#9ecae1",   # light blue
-    high = "#08519c"   # dark navy blue
+    low  = "#9ecae1",
+    high = "#08519c"
   ) +
-  
   theme_minimal(base_size = 10) +
   theme(
     legend.position = "none",
@@ -233,6 +247,6 @@ ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
 ggsave("platform-by-year-barchart.png", width = 6, height = 4)
 
 ```
-hi
+
 ### Plot 4: ___________ 
 
