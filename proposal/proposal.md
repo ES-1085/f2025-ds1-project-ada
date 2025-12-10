@@ -36,8 +36,6 @@ media engagement.
 ## 2. Data
 
 ``` r
-# Code goes here
-# Read in your data file
 setwd("/cloud/project/proposal")
 library(readr)
 social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", skip = 2, n_max = 17)
@@ -64,7 +62,6 @@ demographic <- read_csv("../data/social_media_usage_among_demographic_groups - S
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
-# Print the output of glimpse() or skim()
 glimpse(demographic)
 ```
 
@@ -161,12 +158,9 @@ demographic_clean <- demographic %>%
 ##print(summary_stats)
 ```
 
-<<<<<<< HEAD
-=======
 This is a sample of summary statistics that can be used to which
 platforms are most popular across U.S. adults.
 
->>>>>>> 81ff063759d043cd51bf0911f72057f49ecf672e
 # Draft bar chart for specific platform usage by demographic use
 
 ``` r
