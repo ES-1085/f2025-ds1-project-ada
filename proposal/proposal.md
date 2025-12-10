@@ -3,13 +3,9 @@ Project proposal
 ADA
 
 ``` r
-#install packages 
-## install.packages(c("janitor", "skimr"))
-## install.packages(c("tidyverse", "broom"))
 library(tidyverse)
 library(broom)
 library(skimr)
-## Add any additional packages you are using here
 ```
 
 ## 1. Introduction
@@ -46,8 +42,6 @@ social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2
     ## Delimiter: ","
     ## chr (13): Year, YouTube, Facebook, Instagram, Pinterest, TikTok, LinkedIn, W...
     ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
 demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
@@ -58,8 +52,6 @@ demographic <- read_csv("../data/social_media_usage_among_demographic_groups - S
     ## Delimiter: ","
     ## chr (12): Group, Youtube, Facebook, Instagram, Pinterest, TikTok, LinkedIn, ...
     ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
 glimpse(demographic)
@@ -138,11 +130,6 @@ Trend Line Chart - to show how `platform` popularity changes over time
 demographic_clean <- demographic %>%
   mutate(across(where(is.character), ~ as.numeric(gsub("%", "", .))))
 ```
-
-    ## Warning: There was 1 warning in `mutate()`.
-    ## ℹ In argument: `across(where(is.character), ~as.numeric(gsub("%", "", .)))`.
-    ## Caused by warning:
-    ## ! NAs introduced by coercion
 
 ## Example of summary statistics
 
