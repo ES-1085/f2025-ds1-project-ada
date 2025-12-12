@@ -12,16 +12,16 @@ web and mail. That way, nearly all U.S. adults had a chance of selection.
 The survey was weighted to be representative of the U.S. adult population 
 by gender, race and ethnicity, and other categories.
 
-Our goal for our project was to explore trends in the popularity of various 
+Our goal for our project was to explore trends within the popularity of various 
 social media platforms among U.S. adults over time. By examining changes in 
 user engagement across platforms, our project aims to understand how digital 
 behaviors and communication preferences have shifted over the past decade. 
 Our research question is: How has social media usage evolved from 2012-2024, 
 and what patterns can be seen across different platforms?
 
-We utilized three different bar charts to show the differences in
-different demographic groups across platforms, and also to see 
-the growth of usage rate in across platforms over time. 
+We utilized three different bar charts to show the differences between
+demographic groups across platforms, and also to see 
+the growth of usage rate across platforms over the years. 
 
 Our first bar chart shows the percentage of U.S. adults using each 
 platform, broken down by racial group. Asian and Hispanic adults show 

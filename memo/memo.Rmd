@@ -12,20 +12,23 @@ library(skimr)
 
 ## Data Clean Up Steps for Overall Data
 
-### Step 1: Cleaning both data sets
+### Cleaning both data sets
 
+In this step, we cleaned the demographic data set to remove the percentage sign from each usage rate so that the numbers can be more easily used, and we turned each demographic group into variables called "race" and "gender", opposed to each group having its own variable. 
 ```{r clean-demographic}
+
+setwd("/cloud/project/proposal")
+library(readr)
+social <- read_csv("../data/which_social_media_platforms_are_most_popular_data_2024-11-13.csv", skip = 2, n_max = 17)
+
+demographic <- read_csv("../data/social_media_usage_among_demographic_groups - Sheet1 (1).csv", skip = 1)
+
 demographic_clean <- demographic %>%
-  # ensure Group is character 
   mutate(Group = as.character(Group)) %>%
-  
-  # convert only columns that actually contain "%" into numeric
   mutate(across(
     .cols = where(~ any(grepl("%", .x, fixed = TRUE), na.rm = TRUE)),
     .fns  = ~ as.numeric(gsub("%", "", .x))
   )) %>%
-  
-  # create gender and race columns
   mutate(
     gender = case_when(
       Group %in% c("Men", "Women") ~ Group,
@@ -36,8 +39,6 @@ demographic_clean <- demographic %>%
       TRUE ~ NA_character_
     )
   ) %>%
-  
-  # reshape to long format
   pivot_longer(
     cols = -c(Group, gender, race),
     names_to  = "platform",
@@ -47,15 +48,12 @@ demographic_clean <- demographic %>%
 
 ```
 
+In this step, we cleaned the social data set to remove the percentage sign from each usage rate so that the numbers can be more easily used, brought each social media platform into a variable called "platform", and adjusted the year variable to be in month/day/year format. 
 ```{r clean-social}
 social_clean <- social %>%
   mutate(across(where(is.character), 
                 ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .))))) %>%
-  
-  # Keep year column, rename if needed
   rename(date = Year) %>%
-  
-  # Reshape to long format
   pivot_longer(
     cols = -date,
     names_to = "platform",
@@ -64,9 +62,10 @@ social_clean <- social %>%
   mutate(year = lubridate::year(lubridate::mdy(date)))
 ```
 
-### Step 2: Visualization for presentation on 11/13
-
 ## Plots
+
+Why These Visualizations Were Chosen:
+To explore how social media usage varies across different demographic groups and over time, we selected grouped bar charts and small-multiple panel layouts. These visualizations make it easy to compare platforms side by side while still highlighting differences between races, genders, and years. Grouped bar charts allow for direct numerical comparison across categories, and the small multiple format keeps each platform visually consistent while reducing clutter. Together, these choices provide a clear structure for identifying trends, disparities, and patterns in social media behavior across U.S. adults.
 
 ### Plot 1: Platform Usage by Race
 
@@ -82,16 +81,13 @@ cb_palette <- c(
 
 ggplot(demographic_clean %>% filter(!is.na(race)),
        aes(x = race, y = percent, fill = race)) +
-  
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
-
   geom_text(
     aes(label = percent),
     position = position_dodge(width = 0.9),
     vjust = -0.3,
     size = 1.8
   ) +
-  
   labs(
     title = "Social Media Usage by Platform and Race",
     subtitle = "Data obtained through a survey of 5,022 adults across the US",
@@ -99,48 +95,38 @@ ggplot(demographic_clean %>% filter(!is.na(race)),
     x = "Race",
     y = "Usage (%)"
   ) +
-  
   scale_fill_manual(values = cb_palette) +
-  
   facet_wrap(~ platform, nrow = 3) +
-  
   scale_y_continuous(
     limits = c(0, 100),
     expand = expansion(mult = c(0, 0.07))
   ) +
-  
   theme_minimal(base_size = 10) +
   theme(
     axis.text.y = element_blank(),
     axis.ticks.y = element_blank(),
-    
     panel.grid.major.y = element_line(color = "gray80"),
     panel.grid.minor = element_blank(),
-    
     axis.text.x = element_text(size = 7, angle = 45, hjust = 1),
-
     plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
     plot.subtitle = element_text(size = 8, hjust = 0.5, margin = margin(b = 8)), 
     plot.caption = element_text(size = 6, hjust = 0.5, margin = margin(b = 8)),
-
     legend.position = "none"
   )
 
 ggsave("platform-by-race.png", width = 4, height = 4)
 
 ```
-
+Based on the race graph, social media usage varies noticeably across racial groups, with Hispanic adults showing especially high engagement on platforms like TikTok and YouTube, while Asian adults report the highest usage on WhatsApp and YouTube. These differences suggest that cultural preferences, communication norms, and community networks shape platform choice.
 
 ### Plot 2: Platform Usage by Gender
 
 ```{r platform-usage-by-gender, fig.alt = "Faceted bar chart showing social media usage by platform and gender. Each facet represents a platform, the x-axis shows men and women, the y-axis shows usage percentages, bars are colored by gender, and labels above each bar display exact usage values. The chart highlights differences in how men and women use social media platforms across adults in the United States."}
 
-# compute female usage for each platform 
 female_usage <- demographic_clean %>%
   filter(gender == "Women") %>%
   select(platform, female_percent = percent)
 
-# join back + reorder platform factor by female usage 
 demographic_sorted <- demographic_clean %>%
   left_join(female_usage, by = "platform") %>%
   mutate(platform = reorder(platform, female_percent))
@@ -185,7 +171,7 @@ ggplot(demographic_sorted %>% filter(!is.na(gender)),
 ggsave("platform-by-gender-facet.png", width = 4, height = 4)
 
 ```
-
+From the gender graph, women consistently use visually oriented or communication focused platforms more (e.g., Pinterest, Instagram, Snapchat), while men show higher usage on platforms that emphasize information or discussion, such as Reddit and Twitter (X). This pattern reflects differences in how men and women engage with online spaces and the types of content they prefer.
 
 ### Plot 3: Platform Usage by Year
 
@@ -197,11 +183,18 @@ platform_order <- c(
   "X (formerly Twitter)", "Reddit", "BeReal", "Nextdoor"
 )
 
-social_plot <- social_clean %>%
-  filter(!is.na(percent)) %>%
-  mutate(platform = factor(platform, levels = platform_order))
+social_clean <- social %>%
+  mutate(across(!Year,
+                ~ as.numeric(ifelse(is.na(.), NA, gsub("%", "", .))))) %>%
+  rename(date = Year) %>%
+  pivot_longer(
+    cols = -date,
+    names_to  = "platform",
+    values_to = "percent"
+  ) %>%
+  mutate(year = lubridate::year(lubridate::mdy(date)))
 
-ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
+ggplot(social_clean, aes(x = factor(year), y = percent, fill = percent)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ platform, nrow = 3) +
   scale_y_continuous(
@@ -215,12 +208,10 @@ ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
     y = "Usage (%)",
     caption = "Data: Pew Research Center, surveys of U.S. adults 2012–2024."
   ) +
-  
   scale_fill_gradient(
-    low = "#9ecae1",   # light blue
-    high = "#08519c"   # dark navy blue
+    low  = "#9ecae1",
+    high = "#08519c"
   ) +
-  
   theme_minimal(base_size = 10) +
   theme(
     legend.position = "none",
@@ -233,3 +224,8 @@ ggplot(social_plot, aes(x = factor(year), y = percent, fill = percent)) +
 ggsave("platform-by-year-barchart.png", width = 6, height = 4)
 
 ```
+The years graph highlights how platform popularity has shifted over time. Long established platforms like Facebook and YouTube remain widely used, while newer platforms such as TikTok and Snapchat show rapid adoption beginning around 2016–2020. Instagram also shows steady growth across the decade. These trends indicate how technological change and generational behavior shape the evolving landscape of social media use.
+
+
+Overall, the combined results across race, gender, and time show that social media usage is not uniform. Different groups use different platforms for different purposes, and those preferences shift as new platforms emerge.
+
